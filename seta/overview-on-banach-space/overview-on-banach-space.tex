@@ -1,0 +1,245 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{amsmath}% http://ctan.org/pkg/amsmath
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mdframed}
+\usepackage[vietnamese]{babel}
+\usepackage{mathtools}
+\usepackage{listings}% http://ctan.org/pkg/listings
+\usepackage{enumitem}
+\usepackage{import}
+\usepackage{xifthen}
+\usepackage{pdfpages}
+\usepackage{transparent}
+\usepackage{float}
+\usepackage{hyperref}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem*{remark}{Remark}
+\newtheorem{definition}{Definition}[section]
+\newenvironment{ftheorem}
+  {\begin{mdframed}\begin{theorem}}
+  {\end{theorem}\end{mdframed}}
+\newenvironment{fcorollary}
+  {\begin{mdframed}\begin{corollary}}
+  {\end{corollary}\end{mdframed}}
+\newenvironment{flemma}
+  {\begin{mdframed}\begin{lemma}}
+  {\end{lemma}\end{mdframed}}
+\newenvironment{fremark}
+  {\begin{mdframed}\begin{remark}}
+  {\end{remark}\end{mdframed}}
+\newenvironment{fdefinition}
+  {\begin{mdframed}\begin{definition}}
+  {\end{definition}\end{mdframed}}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+\urlstyle{same}
+\newcommand{\incfig}[1]{%
+    \def\svgwidth{\columnwidth}
+    \import{./Figures/}{#1.pdf_tex}
+}
+
+\title{Một vài giới thiệu về Không Gian Banach}
+\date{}
+\author{Long Nguyen}
+
+\begin{document}
+\maketitle
+
+\section{Giới thiệu}
+
+Tất cả chúng ta đều đã rất quen với một không gian, ký hiệu bằng chữ \(\mathbb{R}\). Đây là
+"tập số thực".
+Có lẽ chúng ta đã quen tới mức không nghĩ nhiều về cấu trúc của những con số này.
+Dùng là dùng thôi.
+
+Nếu như nhìn kỹ vào, thì trường số thực mà chúng ta đang đứng trên thì lại là một đỉnh núi!
+Chúng ta đang sử dụng một công cụ rất "hoàn thiện" và tiện lợi. Một cách nôm na thì vật thể
+\(\mathbb{R}\) này mà chúng ta đang dùng giống như một chiếc ô tô vậy.
+Chúng ta sống ở trong đô thị, một chiếc ô tô hoàn toàn có thể đưa chúng ta tới bất kỳ đâu
+ta muốn.
+
+Thế nhưng, đôi khi ta muốn lên trên núi (như đi phượt Hà Giang chẳng hạn), hay thi thoảng
+ta muốn đi chơi trên sông, hoặc đôi khi chỉ là đi chơi phố cổ Hà Nội thôi, thì bỗng dưng
+chiếc ô tô lại không thể sử dụng được nữa.
+
+Nếu như bạn đã từng đi phươt Hà Giang rồi thì chắc chắn bạn sẽ biết rằng, đi bằng ô tô,
+bạn đang bỏ lỡ rất nhiều cảnh đẹp. Đi ô tô trên sông thì chắc chắc là không thể rồi.
+Và đi ở trong phố cổ Hà Nội thì không gì tiện hơn là một chiếc xe máy để luồn lách,
+và để có thể gửi xe một cách thảnh thơi.
+
+Vậy thì cái cấu trúc của không gian số thực mà chúng ta đang dùng cũng vậy. Trong cuộc sống
+đời thường, những gì chúng ta vẫn sử dụng hoàn toàn không có vấn đề gì. Nhưng nếu như
+công việc đòi hỏi chúng ta phải "lên núi", "đi sông", ví dụ như anh chị em làm khoa học
+dữ liệu, hay AI, ML chẳng hạn, đôi khi chúng ta cần có những công cụ phù hợp với hoàn cảnh
+cụ thể mà chúng ta đang rơi vào.
+
+Lúc này các bạn có thể tự đặt ra câu hỏi rằng ứng dụng như thế nào? Tôi chỉ làm việc với
+các con số thực và máy tính cũng chỉ hiểu số 0 và số 1 thôi mà? Tôi không hình dung nổi được
+trường hợp nào cần phải sử dụng những công cụ mà bạn đang nói.
+
+Vậy thì hãy để cho tôi giới thiệu tiếp cho các bạn.
+\pagebreak
+
+\begin{remark}
+  Tôi viết bài này bằng \LaTeX, nên là một số nơi các bạn sẽ nhìn thấy các ký hiệu
+  tiếng Anh. Đây là do được tự động sinh ra.
+
+  Thứ hai là các định nghĩa, bổ đề, định lý, hệ quả, mệnh đề, ghi chú, ... sẽ được
+  viết bằng tiếng Anh, đơn giàn là bởi vì tôi được học các khái niệm này bằng tiếng
+  Anh và không biết khá nhiều thuật ngữ trong tiếng Việt.
+\end{remark}
+
+\section{Giới thiệu khó hơn}
+
+\subsection*{Một ví dụ về không gian}
+Tiếp theo ở phía trên, tôi sẽ đưa ra một ví dụ về không gian, nhưng không phải của số.
+Vì chắc là anh chị em làm việc với AI/ML sẽ quan tâm tới những gì tôi viết hơn nên đây
+là một ví dụ liên quan tới Machine Learning.
+
+Trong ML, việc huấn luyện mô hình có thể được mô tả bằng bài toán như sau:
+
+\begin{mdframed}
+  Với một bộ dữ liệu \(\mathcal{D} = \{ (x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n) \}\)
+  (có một phân phối \(P(x, y)\) nào đó, nhưng khía cạnh này tôi sẽ không nói ở đây),
+  ta cần tìm một hàm số \(h\) nào đó nằm trong \textbf{không gian các hàm số} \(\mathcal{H}\)
+  sao cho hàm số \(h\) này `tốt' nhất có thể.
+
+  `Tốt' ở đây có nghĩa rằng, với các điểm dữ liệu nằm trong tập \(\mathcal{D}\), ta có
+  \[
+    h(x) \approx y
+  \]
+  và ta muốn giá trị
+  \begin{equation}\label{eq:eq-1}
+    \mathbb{E}[L(h(x), y)]_{(\overline{x} , \overline{y} ) \sim P(x , y)}
+  \end{equation}
+  nhỏ nhất có thể.
+
+  Giải thích dễ hiểu hơn thì là ta mong muốn \emph{giá trị kỳ vọng}
+  của \emph{loss} của model là nhỏ nhất có thể. Dễ hiểu hơn nữa là model "đoán" càng gần
+  giá trị thực tế càng tốt.
+\end{mdframed}
+
+Điều mà tôi muốn tập trung vào chính là
+\textbf{không gian các hàm số} \(\mathcal{H}\) ở trên. Khi làm việc với ML, ngoài việc
+phân tích về dữ liệu thì ta cũng có thể phân tích về chính bản thân các model. Vậy thì ở trong
+không gian các model này, ta cần phải có những công cụ khác với những thứ ta vẫn sử dụng hàng ngày.
+
+Một ví dụ đơn giản: Làm thế nào để ta định nghĩa được hai hàm số là ``gần nhau''?
+Hàm số \(f(x) = x^2\) và \(g(x) = x^2 + 1\) có ``gần nhau'' hơn so với \(f(x) = x^2\) và
+\(h(x) = x^3\)? Các công cụ có được trong quá trình nghiên cứu về không gian Banach
+(đúng hơn là giải tích hàm - Functional Analysis) sẽ cho ta câu trả lời và các công cụ cần thiết
+
+Và như vậy chúng ta quay trở lại
+
+\subsection*{Toán}
+Trước tiên thì tôi cần phải cho các bạn nhìn thấy được đằng sau lớp sơn bóng bẩy của chiếc
+``ô tô'' \(\mathbb{R}\) thì đằng sau ký hiệu đó là gì.
+
+Về mặt toán học, ta có thể nói \(\mathbb{R}\) là một \textbf{không gian Banach} (Banach space).
+
+\begin{fdefinition}
+  A \textbf{Banach space} is a complete normed vector space.
+\end{fdefinition}
+
+Oke nghe rất xịn xò, ``Banach space'', ``normed vector space'', ``complete''? Hoàn hảo?
+
+Tôi sẽ giải thích các khái niệm này cho các bạn thông qua
+
+\section{Một số định nghĩa cơ bản}
+
+Từ khoá đầu tiên là ``vector space''. Một không gian vector \(X\) ở trên trường \(F\) là một
+tập hợp \(X\) cùng với hai phép toán tử, thoả mãn 8 tiên đề, v.v. Nếu đi sâu hơn thì ta
+đang học môn cấu trúc đại số mất.
+
+Hiện tại, chỉ cần hiểu không gian vector (không gian) là một tập hợp (số).
+
+Từ khoá quan trọng đầu tiên mà ta quan tâm là ``norrmed space''.
+Vậy thì ``norm'' (chuẩn) là gì?
+
+\begin{fdefinition}
+  A \textbf{norm} on a vector space \(X\) over a field \(\mathbb{F}\) is a mapping \(\| \cdot \|: X \to \mathbb{R}\) such that
+  \begin{enumerate}
+    \item $\| x \| \geq 0$ for all $x \in X$ and $\| x \| = 0$ if and only if $x = 0$.
+    \item $\| \alpha x \| = |\alpha| \| x \|$ for all $\alpha \in \mathbb{F}$ and $x \in X$.
+    \item $\| x + y \| \leq \| x \| + \| y \|$ for all $x, y \in X$.
+  \end{enumerate}
+\end{fdefinition}
+
+Trước tiên, \emph{norm} cho chúng ta một ý niệm về "khoảng cách" giữa hai "điểm" bất kỳ
+trong một "không gian" bất kỳ. (Tôi không đưa ra khái niệm về "khoảng cách" / "metric" ở đây,
+nhưng nó cũng khá là tương tự). Khoảng cách giữa hai điểm \(x\) và \(y\) được suy ra từ norm
+chính là
+\[
+  d(x, y) = \| x - y \|
+\]
+
+Nhìn vào định nghĩa này, có thể thấy nó rất\dots hiển nhiên. Một phần là bởi vì định
+nghĩa này đã được ``thiết kế'' để cho khái niệm thông thường về khoảng các vẫn được giữ nguyên.
+
+Tuy nhiên thì nó có thể được khái quát lên hơn rất nhiều. Hãy quay trở lại ví dụ ở trên,
+một cách phổ biến để đo khoảng cách giữa các hàm số chính là bằng \emph{uniform norm}.
+
+\begin{fdefinition}
+  Let \(X\) be a set. The \textbf{uniform norm} on \(X\) is defined by
+  \[
+    \| f \|_{\infty} = \sup_{x \in X} |f(x)|
+  \]
+\end{fdefinition}
+
+Từ khoá cuối cùng mà chúng ta cần phải khám phá đó chính là ``complete''.
+
+Vậy thì một không gian phải như thế nào mới là một không gian ``hoàn chỉnh''?
+
+\begin{fdefinition}
+  A vector space \(X\) is \textbf{complete} if every Cauchy sequence in \(X\) converges to a limit in \(X\).
+\end{fdefinition}
+
+Oke, vậy là định nghĩa này lại sinh ra một loạt các từ khoá khác mà chúng ta lại phải khám phá.
+Tôi sẽ nói cho các bạn biết rằng những định nghĩa này tuy rằng trông có vẻ rất ngắn và đơn giản,
+nhưng cách sử dụng chúng thì lại biến hoá không lường. Bạn có thể tin tôi vì tôi đã và
+đang và vẫn sẽ phải vật lộn với rất nhiều bài tập.
+
+Có lẽ tôi sẽ dừng lại việc đưa ra thêm định nghĩa ở đây, bởi vì bài viết này không mong muốn được
+làm một bài giảng toán học. Nếu các bạn muốn biết thêm thì đọc sách có lẽ sẽ tốt hơn nhiều
+so với việc đọc cái này.
+
+Một điều tôi muốn nói ở đây là, một trong những câu hỏi thường xuyên nhất
+mà mọi người (và chính bản thân tôi ngày xưa) thường đặt ra là: ``Tại sao người ta
+lại định nghĩa những thứ này như vậy?'' hoặc ``Tại sao người ta lại quan tâm tới
+những thứ này?''
+
+Câu trả lời của tôi bây giờ cho các bạn là: Tât cả những định nghĩa này được đặt ra đều có mục
+đích của chúng cả. Có những định nghĩa phải mất tới hàng trăm năm (200, theo như tôi đã
+từng đọc được trong một cuốn sách nào đó) thì người ta mới có thể đưa ra được
+một định nghĩa ``đúng''.
+
+Tôi không viết nhầm đâu, mất rất nhiều thời gian thì mới có thể đưa ra được \textbf{định nghĩa đúng}.
+
+Càng học sâu thì tôi mới càng thấy rằng, việc xây dựng được hệ thống còn quan trọng hơn
+cả việc được ra được hay chứng minh được định lý này nọ. Khi ta có được một hệ thống
+lý thuyết và các công cụ tốt, thì các định lý và kết quả hữu dụng sẽ đến một cách rất tự
+nhiên. Không cần phải có thiên tài nào để ``tìm ra'', hoặc ``phát mình ra'' những định lý
+nào cả.
+
+\section*{Quay trở lại một chút về đời thường và công việc}
+
+bởi vì suy cho cùng thì tôi đang chia sẻ cho anh chị em ở trong công ty.
+
+Tôi thấy cuộc sống và công việc cũng mang tinh thần này. Nếu như chúng ta có một hệ thống
+để làm việc và học hỏi tốt, thì những thành công trong công việc sẽ tới một cách rất tự nhiên.
+Tôi không cần phải là thiên tài thì mới có thể làm việc tốt được, tôi chỉ cần xây dựng cho
+mình một hệ thống tốt.
+
+Cảm ơn các bạn đã đọc đến đây. Chia sẻ một chút vậy thôi, vì đây không phải là blog cá nhân.
+
+\end{document}
